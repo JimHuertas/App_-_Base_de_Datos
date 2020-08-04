@@ -8,7 +8,15 @@ import edward.example.com.BaseDatos.FeedReaderContract.FeedEntry;
 
 public class DatosOpenHelper extends SQLiteOpenHelper {
 
+    private static final String SQL_CREATE_ENTRIES  =
+            "CREATE TABLE IF NOT EXISTS " + FeedEntry.TABLE_NAME + " (" +
+                    FeedEntry.COLUMN_NAME + " VARCHAR(250), " +
+                    FeedEntry.COLUMN_DIREC + " VARCHAR(250), " +
+                    FeedEntry.COLUMN_EMAIL + " VARCHAR(200), " +
+                    FeedEntry.COLUMN_NUMBER + " VARCHAR(20))";
 
+
+    /*
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + FeedEntry.TABLE_NAME + " (" +
                     FeedEntry._ID + " INTEGER PRIMARY KEY," +
@@ -17,7 +25,7 @@ public class DatosOpenHelper extends SQLiteOpenHelper {
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + FeedEntry.TABLE_NAME;
-
+    */
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "DATOS.db";
 
@@ -33,14 +41,10 @@ public class DatosOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(SQL_DELETE_ENTRIES);
-        onCreate(db);
+
     }
 
-    @Override
-    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        onUpgrade(db, oldVersion, newVersion);
-    }
+
 
         /* @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {

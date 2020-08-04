@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 
 import edward.example.com.BaseDatos.DatosOpenHelper;
+import edward.example.com.BaseDatos.FeedReaderContract;
+import edward.example.com.BaseDatos.FeedReaderContract.FeedEntry;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -16,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.BaseColumns;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -28,7 +32,7 @@ public class ActMain extends AppCompatActivity {
     private ArrayList<String> clientes;
 
     private SQLiteDatabase conexion;
-    private DatosOpenHelper datosOpenHelper = new DatosOpenHelper(getContext());
+    private DatosOpenHelper datosOpenHelper;
 
 
     @Override
@@ -52,13 +56,59 @@ public class ActMain extends AppCompatActivity {
         actualizar();
     }
 
-    private void actualizar(){
+    private void actualizar() {
         lstDatos = (ListView) findViewById(R.id.lstDatos);
         clientes = new ArrayList<String>();
+        String sNombre;
+        String sTelefono;
 
         try {
             datosOpenHelper = new DatosOpenHelper(this);
             conexion = datosOpenHelper.getWritableDatabase();
+            String[] projection = {
+                    FeedEntry.COLUMN_NAME,
+                    FeedEntry.COLUMN_DIREC,
+                    FeedEntry.COLUMN_EMAIL,
+                    FeedEntry.COLUMN_NUMBER
+            };
+
+            Cursor resultado = conexion.query(
+                    FeedEntry.TABLE_NAME,
+                    projection,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+
+            if (resultado.getCount() > 0) {
+                resultado.moveToFirst();
+                do {
+                    sNombre = resultado.getString(resultado.getColumnIndex(FeedEntry.COLUMN_NAME));
+                    sTelefono = resultado.getString(resultado.getColumnIndex(FeedEntry.COLUMN_NUMBER));
+                    clientes.add(sNombre + ": " + sTelefono);
+                } while (resultado.moveToNext());
+                resultado.close();
+            }
+            adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, clientes);
+            lstDatos.setAdapter(adaptador);
+        } catch (Exception ex) {
+            AlertDialog.Builder dlg = new AlertDialog.Builder(this);
+            dlg.setTitle("Aviso");
+            dlg.setMessage(ex.getMessage());
+            dlg.show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        actualizar();
+        //super.onActivityResult(requestCode, resultCode, data);
+    }
+}
+
+            /*
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM CLIENTE");
             String sNombre;
@@ -81,16 +131,11 @@ public class ActMain extends AppCompatActivity {
             AlertDialog.Builder  dlg = new AlertDialog.Builder(this);
             dlg.setTitle("Aviso");
             dlg.setMessage(ex.getMessage());
-            dlg.show();
-        }
-    }
+            dlg.show();*/
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        actualizar();
-        //super.onActivityResult(requestCode, resultCode, data);
-    }
-}
+
+
+
 
 
 

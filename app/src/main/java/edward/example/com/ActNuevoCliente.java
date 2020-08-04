@@ -1,5 +1,6 @@
 package edward.example.com;
 
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import edward.example.com.BaseDatos.DatosOpenHelper;
+import edward.example.com.BaseDatos.FeedReaderContract;
+import edward.example.com.BaseDatos.FeedReaderContract.FeedEntry;
 
 public class ActNuevoCliente extends AppCompatActivity {
     private EditText edtNombre;
@@ -62,7 +65,17 @@ public class ActNuevoCliente extends AppCompatActivity {
                     try {
                         datosOpenHelper = new DatosOpenHelper(this);
                         conexion = datosOpenHelper.getWritableDatabase();
-                        StringBuilder sql = new StringBuilder();
+                        ContentValues values = new ContentValues();
+                        values.put(FeedEntry.COLUMN_NAME, edtNombre.getText().toString().trim() );
+                        values.put(FeedEntry.COLUMN_DIREC, edtDireccion.getText().toString().trim() );
+                        values.put(FeedEntry.COLUMN_EMAIL, edtEmail.getText().toString().trim() );
+                        values.put(FeedEntry.COLUMN_NUMBER, edtTelefono.getText().toString().trim() );
+                        finish();
+
+                        conexion.insert(FeedEntry.TABLE_NAME, null, values);
+                        conexion.close();
+
+                        /*StringBuilder sql = new StringBuilder();
                         sql.append("INSERT INTO CLIENTE (NOMBRE, DIRECCION, EMAIL, TELEFONO) VALUES(' ");
                         sql.append(edtNombre.getText().toString().trim() + "', '");
                         sql.append(edtDireccion.getText().toString().trim() + "', '");
@@ -70,9 +83,9 @@ public class ActNuevoCliente extends AppCompatActivity {
                         sql.append(edtTelefono.getText().toString().trim() + "') ");
 
                         conexion.execSQL(sql.toString());
-                        conexion.close();
+                        conexion.close();*/
 
-                        finish();
+
                     } catch (Exception ex) {
                         AlertDialog.Builder dlg = new AlertDialog.Builder(this);
                         dlg.setTitle("Aviso");
