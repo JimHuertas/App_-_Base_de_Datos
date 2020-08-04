@@ -28,7 +28,7 @@ public class ActMain extends AppCompatActivity {
     private ArrayList<String> clientes;
 
     private SQLiteDatabase conexion;
-    private DatosOpenHelper datosOpenHelper;
+    private DatosOpenHelper datosOpenHelper = new DatosOpenHelper(getContext());
 
 
     @Override
